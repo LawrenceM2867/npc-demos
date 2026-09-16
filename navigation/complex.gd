@@ -1,9 +1,8 @@
 ##node containing all spatial nodes and managing the navigation system
 @tool class_name Complex extends Node
 
-#TODO: set mesh and materials for rendering here
-const POINT_MESH: SphereMesh = preload(...) ##the mesh rendered for the points on the navigation grid
-const CONNECTION_MATERIAL: StandardMaterial3D = preload(...) ##the material rendered onto a path line on the navigation grid
+const POINT_MESH: SphereMesh = preload("uid://cgg5ugiapdkxg") ##the mesh rendered for the points on the navigation grid
+const CONNECTION_MATERIAL: StandardMaterial3D = preload("uid://yt7042shagqe") ##the material rendered onto a path line on the navigation grid
 const COLOR_DISABLED: Color = Color(0.0, 0.0, 0.0, 1.000) ##color of points on the navigation grid that are disabled
 const COLOR_DEFAULT:  Color = Color(0.0, 0.0, 0.0, 0.122) ##color of points on the navigation grid by default
 const COLOR_PATH:     Color = Color(1.0, 0.0, 0.0, 1.000) ##color of points on the navigation grid that are also on a path line
@@ -261,11 +260,13 @@ class Shape extends RefCounted:
 	
 	func _init(_shape: Shape3D) -> void: _update(_shape) #updates on initization
 	
-	##swaps the signal of the old shape with the new one, gets the AABB of it, and requests a refresh to be done
-	func _update(_shape: Shape3D) -> void: 
-		disconnect_shape()
-		shape = _shape
-		shape.changed.connect(_update.bind(shape))
+	##swaps the signal of the old shape with the new one if reconnect is true (2 functionalities 
+	##merged into 1 call to reduce function calls), gets the AABB of it, and requests a refresh to be done
+	func _update(_shape: Shape3D, reconnect: bool = true) -> void: 
+		if reconnect: 
+			disconnect_shape()
+			shape = _shape
+			shape.changed.connect(_update.bind(shape))
 		local = shape.get_debug_mesh().get_aabb()
 		dirty = true
 	
@@ -281,5 +282,5 @@ class Shape extends RefCounted:
 	
 	##disconnects the updated function from the changed signal of the shape
 	func disconnect_shape() -> void:
-		if is_instance_valid(shape) and shape.changed.is_connected(_update.bind(shape)):
-			shape.changed.disconnect(_update.bind(shape))
+		if is_instance_valid(shape) and shape.changed.is_connected(_update.bind(shape, false)):
+			shape.changed.disconnect(_update.bind(shape, false))
