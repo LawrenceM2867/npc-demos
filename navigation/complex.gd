@@ -1,10 +1,11 @@
 ##node containing all spatial nodes and managing the navigation system
 @tool class_name Complex extends Node
 
-const POINT_MESH: SphereMesh = preload("uid://cgg5ugiapdkxg") ##the mesh rendered for the points on the navigation grid
-const CONNECTION_MATERIAL: StandardMaterial3D = preload("uid://yt7042shagqe") ##the material rendered onto a path line on the navigation grid
-const COLOR_DISABLED: Color = Color(0.0, 0.0, 0.0, 1.000) ##color of points on the navigation grid that are disabled
-const COLOR_DEFAULT:  Color = Color(0.0, 0.0, 0.0, 0.122) ##color of points on the navigation grid by default
+#TODO: set rendering resources
+const POINT_MESH: SphereMesh = preload("uid://...") ##the mesh rendered for the points on the navigation grid
+const CONNECTION_MATERIAL: StandardMaterial3D = preload("uid://...") ##the material rendered onto a path line on the navigation grid
+const COLOR_DISABLED: Color = Color(1.0, 1.0, 1.0, 1.000) ##color of points on the navigation grid that are disabled
+const COLOR_DEFAULT:  Color = Color(1.0, 1.0, 1.0, 0.122) ##color of points on the navigation grid by default
 const COLOR_PATH:     Color = Color(1.0, 0.0, 0.0, 1.000) ##color of points on the navigation grid that are also on a path line
 const ADVANCE_THRESHOLD: float = 0.5 ##the minimum distance an agent has to be to a point on their path line to get the next point on the line
 const DEVIATION_THRESHOLD: float = 0.5 ##if an agent is this many multiples of spacing from it's next point, the path recomputes
@@ -266,7 +267,7 @@ class Shape extends RefCounted:
 		if reconnect: 
 			disconnect_shape()
 			shape = _shape
-			shape.changed.connect(_update.bind(shape))
+			shape.changed.connect(_update.bind(shape, false))
 		local = shape.get_debug_mesh().get_aabb()
 		dirty = true
 	
